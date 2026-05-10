@@ -1,5 +1,65 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Icon from "@/components/ui/icon";
+
+// Soft lo-fi / music box style track (royalty-free from Pixabay)
+const MUSIC_URL = "https://cdn.pixabay.com/audio/2023/09/05/audio_1d0e716ef9.mp3";
+
+function MusicButton() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [started, setStarted] = useState(false);
+
+  const toggle = () => {
+    if (!audioRef.current) {
+      const audio = new Audio(MUSIC_URL);
+      audio.loop = true;
+      audio.volume = 0.45;
+      audioRef.current = audio;
+    }
+    if (playing) {
+      audioRef.current.pause();
+      setPlaying(false);
+    } else {
+      audioRef.current.play();
+      setPlaying(true);
+      setStarted(true);
+    }
+  };
+
+  return (
+    <button
+      onClick={toggle}
+      className="animate-fade-in"
+      style={{
+        animationDelay: "1.6s",
+        opacity: 0,
+        position: "fixed",
+        bottom: "24px",
+        right: "24px",
+        zIndex: 50,
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        background: playing ? "hsl(340 85% 68%)" : "rgba(255,255,255,0.92)",
+        color: playing ? "white" : "hsl(340 50% 50%)",
+        border: "2px solid hsl(340 80% 85%)",
+        borderRadius: "100px",
+        padding: "10px 18px",
+        fontFamily: "'Nunito', sans-serif",
+        fontWeight: 800,
+        fontSize: "0.78rem",
+        cursor: "pointer",
+        boxShadow: "0 6px 20px rgba(220,80,130,0.2)",
+        backdropFilter: "blur(8px)",
+        transition: "all 0.3s ease",
+        letterSpacing: "0.04em",
+      }}
+    >
+      <span style={{ fontSize: "1rem" }}>{playing ? "🎵" : "🎵"}</span>
+      {!started ? "Click here to play music!" : playing ? "Pause music" : "Play music"}
+    </button>
+  );
+}
 
 const FLOWERS_IMG = "https://cdn.ezst.app/projects/484d62d1-93ec-41a1-a7ac-f39d1a365a2a/files/2796f461-7057-40c8-89a8-e1a595d3ec0c.jpg";
 const PHOTO_IMG   = "https://cdn.ezst.app/projects/484d62d1-93ec-41a1-a7ac-f39d1a365a2a/files/3fa4e585-b647-42db-840f-dede1dbfa714.jpg";
@@ -420,6 +480,7 @@ export default function Index() {
         ? <HeroSection onExplore={() => setPage("gifts")} />
         : <GiftSection onBack={() => setPage("hero")} />
       }
+      <MusicButton />
     </div>
   );
 }
