@@ -1,38 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Icon from "@/components/ui/icon";
 
-const FLOWERS_IMG = "https://cdn.ezst.app/projects/484d62d1-93ec-41a1-a7ac-f39d1a365a2a/files/b1952fb7-08cb-4e76-a460-4b0d47b6b983.jpg";
-const PHOTO_IMG = "https://cdn.ezst.app/projects/484d62d1-93ec-41a1-a7ac-f39d1a365a2a/files/20eecb92-8054-4431-b1d1-b23bfe8d9046.jpg";
-const GIFT_IMG = "https://cdn.ezst.app/projects/484d62d1-93ec-41a1-a7ac-f39d1a365a2a/files/70a020ed-4299-4f44-8c93-4707f72e4702.jpg";
+const FLOWERS_IMG = "https://cdn.ezst.app/projects/484d62d1-93ec-41a1-a7ac-f39d1a365a2a/files/2796f461-7057-40c8-89a8-e1a595d3ec0c.jpg";
+const PHOTO_IMG   = "https://cdn.ezst.app/projects/484d62d1-93ec-41a1-a7ac-f39d1a365a2a/files/3fa4e585-b647-42db-840f-dede1dbfa714.jpg";
+const GIFT_IMG    = "https://cdn.ezst.app/projects/484d62d1-93ec-41a1-a7ac-f39d1a365a2a/files/70a020ed-4299-4f44-8c93-4707f72e4702.jpg";
 
 type GiftType = "flowers" | "photos" | "message" | null;
 
-const petals = ["🌸", "🌷", "✿", "❀", "🌺"];
+const PETALS = ["🌸", "🌷", "🌺", "🌼", "💮"];
 
+/* ── Floating petals ── */
 function PetalRain() {
-  const items = Array.from({ length: 12 }, (_, i) => ({
+  const items = Array.from({ length: 14 }, (_, i) => ({
     id: i,
-    left: `${5 + i * 8}%`,
-    duration: `${7 + (i % 5)}s`,
-    delay: `${(i * 1.3) % 10}s`,
-    emoji: petals[i % petals.length],
-    size: `${0.8 + (i % 3) * 0.3}rem`,
+    left: `${(i * 7) % 100}%`,
+    duration: `${6 + (i % 6)}s`,
+    delay: `${(i * 1.1) % 9}s`,
+    emoji: PETALS[i % PETALS.length],
+    size: `${0.9 + (i % 3) * 0.35}rem`,
   }));
-
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {items.map((p) => (
-        <span
-          key={p.id}
-          className="petal"
-          style={{
-            left: p.left,
-            top: "-20px",
-            animationDuration: p.duration,
-            animationDelay: p.delay,
-            fontSize: p.size,
-          }}
-        >
+        <span key={p.id} className="petal" style={{ left: p.left, top: "-20px", animationDuration: p.duration, animationDelay: p.delay, fontSize: p.size }}>
           {p.emoji}
         </span>
       ))}
@@ -40,173 +30,207 @@ function PetalRain() {
   );
 }
 
+/* ── Doodle SVG decorations ── */
+function DoodleStars() {
+  return (
+    <svg className="absolute pointer-events-none select-none" width="100%" height="100%" style={{ inset: 0, position: "absolute", zIndex: 0, opacity: 0.18 }}>
+      {[
+        { cx: "8%",  cy: "12%", r: 3 },
+        { cx: "92%", cy: "8%",  r: 4 },
+        { cx: "5%",  cy: "75%", r: 2.5 },
+        { cx: "95%", cy: "60%", r: 3 },
+        { cx: "50%", cy: "5%",  r: 2 },
+        { cx: "80%", cy: "88%", r: 3.5 },
+        { cx: "15%", cy: "90%", r: 2 },
+      ].map((s, i) => (
+        <circle key={i} cx={s.cx} cy={s.cy} r={s.r} fill="hsl(340 90% 68%)" />
+      ))}
+      {[
+        "M 3% 40% Q 6% 35% 9% 40%",
+        "M 88% 30% Q 91% 25% 94% 30%",
+        "M 45% 95% Q 50% 90% 55% 95%",
+      ].map((d, i) => (
+        <path key={i} d={d} stroke="hsl(340 90% 72%)" strokeWidth="2" fill="none" strokeLinecap="round" />
+      ))}
+    </svg>
+  );
+}
+
+function DoodleHeart({ color = "hsl(340 90% 76%)", size = 18 }: { color?: string; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill={color} style={{ display: "inline-block" }}>
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+    </svg>
+  );
+}
+
+/* ── Hero ── */
 function HeroSection({ onExplore }: { onExplore: () => void }) {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center relative px-6 py-16">
+    <div
+      className="min-h-screen flex flex-col items-center justify-center relative px-6 py-16 overflow-hidden"
+      style={{ background: "linear-gradient(160deg, hsl(340 80% 96%) 0%, hsl(30 80% 96%) 40%, hsl(200 60% 96%) 100%)" }}
+    >
       <PetalRain />
+      <DoodleStars />
 
+      {/* Spinning doodle ring */}
+      <div className="animate-spin-slow absolute" style={{ width: 320, height: 320, opacity: 0.08, borderRadius: "50%", border: "3px dashed hsl(340 70% 65%)" }} />
+      <div className="animate-spin-slow absolute" style={{ width: 380, height: 380, opacity: 0.05, borderRadius: "50%", border: "2px dashed hsl(200 70% 65%)", animationDirection: "reverse" }} />
+
+      {/* Top badge */}
       <div
-        className="fixed inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(ellipse at 20% 30%, hsl(350 60% 94%) 0%, transparent 55%), radial-gradient(ellipse at 80% 70%, hsl(38 50% 93%) 0%, transparent 55%), hsl(40 30% 97%)",
-        }}
-      />
-
-      <div className="flex items-center gap-4 mb-10 animate-fade-in" style={{ animationDelay: "0.2s", opacity: 0 }}>
-        <div className="h-px w-16" style={{ background: "linear-gradient(to right, transparent, hsl(345 55% 75%))" }} />
-        <span className="text-sm tracking-[0.3em] uppercase font-light" style={{ color: "hsl(345 45% 60%)", fontFamily: "'Jost', sans-serif" }}>
-          With all my love
+        className="animate-fade-in mb-8 px-5 py-2 rounded-full flex items-center gap-2"
+        style={{ animationDelay: "0.1s", opacity: 0, background: "rgba(255,255,255,0.75)", backdropFilter: "blur(8px)", border: "1.5px solid hsl(340 80% 88%)", boxShadow: "0 4px 16px rgba(230,100,140,0.12)" }}
+      >
+        <span className="animate-heartbeat" style={{ display: "inline-block" }}>💖</span>
+        <span style={{ fontFamily: "'Nunito', sans-serif", fontSize: "0.8rem", fontWeight: 700, color: "hsl(340 50% 45%)", letterSpacing: "0.08em" }}>
+          Happy Mother's Day, Akiko!
         </span>
-        <div className="h-px w-16" style={{ background: "linear-gradient(to left, transparent, hsl(345 55% 75%))" }} />
+        <span className="animate-heartbeat" style={{ display: "inline-block", animationDelay: "0.4s" }}>💖</span>
       </div>
 
+      {/* Main title */}
       <h1
-        className="text-center mb-6 animate-fade-up"
+        className="text-center mb-4 animate-fade-up"
         style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: "clamp(2.8rem, 8vw, 6rem)",
-          fontWeight: 300,
-          lineHeight: 1.1,
-          color: "hsl(20 10% 22%)",
-          animationDelay: "0.4s",
+          fontFamily: "'Caveat', cursive",
+          fontSize: "clamp(3rem, 10vw, 6.5rem)",
+          fontWeight: 700,
+          lineHeight: 1.05,
+          color: "hsl(340 50% 38%)",
+          animationDelay: "0.3s",
           opacity: 0,
+          textShadow: "2px 3px 0px hsl(340 80% 90%)",
         }}
       >
-        Happy{" "}
-        <em className="shimmer-text" style={{ fontStyle: "italic", fontWeight: 400 }}>
-          Mother's Day
-        </em>
+        お母さんへ 🌸
       </h1>
 
       <p
-        className="text-center max-w-md mb-14 animate-fade-up"
+        className="text-center max-w-sm mb-10 animate-fade-up"
         style={{
-          fontFamily: "'Jost', sans-serif",
-          fontWeight: 200,
-          fontSize: "1.05rem",
-          color: "hsl(20 10% 48%)",
-          lineHeight: 1.8,
-          animationDelay: "0.7s",
+          fontFamily: "'Nunito', sans-serif",
+          fontWeight: 600,
+          fontSize: "1rem",
+          color: "hsl(340 30% 52%)",
+          lineHeight: 1.75,
+          animationDelay: "0.55s",
           opacity: 0,
         }}
       >
-        A small corner of the world created just for you, filled with everything that makes today special.
+        A little gift from Coco, made with lots of love 🎀<br />
+        <span style={{ fontSize: "0.85rem", fontWeight: 500, color: "hsl(340 25% 62%)" }}>Tap below to start opening!</span>
       </p>
 
+      {/* CTA button */}
       <button
         onClick={onExplore}
-        className="animate-fade-up gift-btn"
+        className="animate-fade-up gift-btn animate-bounce-gentle"
         style={{
-          animationDelay: "1s",
+          animationDelay: "0.8s",
           opacity: 0,
-          background: "linear-gradient(135deg, hsl(345 55% 62%), hsl(345 45% 52%))",
+          background: "linear-gradient(135deg, hsl(340 85% 68%), hsl(15 90% 68%))",
           color: "white",
           border: "none",
-          padding: "16px 48px",
-          fontSize: "0.85rem",
-          letterSpacing: "0.2em",
-          textTransform: "uppercase" as const,
+          padding: "16px 44px",
+          fontSize: "1rem",
+          fontFamily: "'Nunito', sans-serif",
+          fontWeight: 800,
           borderRadius: "100px",
           cursor: "pointer",
-          fontFamily: "'Jost', sans-serif",
-          fontWeight: 300,
+          boxShadow: "0 8px 24px rgba(220, 80, 120, 0.35), 0 2px 0px rgba(180,60,100,0.4)",
+          letterSpacing: "0.03em",
         }}
       >
-        Open Your Gift ✦
+        🎁 Open Your Gifts!
       </button>
 
-      <div className="flex gap-4 mt-16 animate-fade-in" style={{ animationDelay: "1.3s", opacity: 0 }}>
+      {/* Floating polaroid previews */}
+      <div className="flex gap-5 mt-14 animate-fade-in" style={{ animationDelay: "1.1s", opacity: 0 }}>
         {[
-          { src: FLOWERS_IMG, rotate: "-6deg", size: "80px", mt: "0" },
-          { src: PHOTO_IMG, rotate: "0deg", size: "96px", mt: "-16px" },
-          { src: GIFT_IMG, rotate: "5deg", size: "80px", mt: "0" },
+          { src: FLOWERS_IMG, rotate: "-8deg", mt: "0" },
+          { src: PHOTO_IMG,   rotate: "1deg",  mt: "-18px" },
+          { src: GIFT_IMG,    rotate: "7deg",  mt: "4px" },
         ].map((img, i) => (
-          <div
-            key={i}
-            style={{
-              width: img.size,
-              height: img.size,
-              borderRadius: "16px",
-              overflow: "hidden",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
-              transform: `rotate(${img.rotate})`,
-              marginTop: img.mt,
-              border: "2px solid rgba(255,255,255,0.9)",
-            }}
-          >
-            <img src={img.src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <div key={i} className="polaroid animate-wiggle" style={{ width: 72, transform: `rotate(${img.rotate})`, marginTop: img.mt, animationDelay: `${i * 0.6}s` }}>
+            <img src={img.src} alt="" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", borderRadius: "2px" }} />
           </div>
+        ))}
+      </div>
+
+      {/* Bottom doodle sparkles */}
+      <div className="flex gap-3 mt-8 animate-fade-in" style={{ animationDelay: "1.4s", opacity: 0 }}>
+        {["✨", "🌷", "✨", "🌸", "✨"].map((s, i) => (
+          <span key={i} className="sticker" style={{ fontSize: "1.1rem", animationDelay: `${i * 0.2}s` }}>{s}</span>
         ))}
       </div>
     </div>
   );
 }
 
-function GiftCard({ emoji, label, sub, bg, accent, delay, onClick }: {
-  emoji: string; label: string; sub: string; bg: string; accent: string; delay: string; onClick: () => void;
+/* ── Gift choice cards ── */
+function GiftCard({ emoji, label, sub, bg, border, delay, onClick }: {
+  emoji: string; label: string; sub: string; bg: string; border: string; delay: string; onClick: () => void;
 }) {
   return (
     <button
       onClick={onClick}
-      className="gift-btn animate-slide-in-up flex flex-col items-center gap-3 py-10 px-6"
-      style={{
-        animationDelay: delay,
-        opacity: 0,
-        background: bg,
-        border: `1px solid ${accent}33`,
-        cursor: "pointer",
-        borderRadius: "24px",
-        outline: "none",
-      }}
+      className="gift-btn cute-card animate-slide-in-up flex flex-col items-center gap-3 py-9 px-5 w-full"
+      style={{ animationDelay: delay, opacity: 0, background: bg, border: `2.5px solid ${border}`, cursor: "pointer", outline: "none" }}
     >
-      <span style={{ fontSize: "2.5rem" }}>{emoji}</span>
-      <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.4rem", fontWeight: 500, color: "hsl(20 10% 22%)" }}>
-        {label}
-      </span>
-      <span style={{ fontFamily: "'Jost', sans-serif", fontSize: "0.78rem", fontWeight: 200, color: "hsl(20 10% 55%)", letterSpacing: "0.05em" }}>
-        {sub}
-      </span>
-      <div
-        style={{
-          marginTop: "8px",
-          width: "32px",
-          height: "1px",
-          background: `linear-gradient(to right, transparent, ${accent}, transparent)`,
-        }}
-      />
+      <span className="animate-bounce-gentle" style={{ fontSize: "2.8rem", display: "block" }}>{emoji}</span>
+      <span style={{ fontFamily: "'Caveat', cursive", fontSize: "1.6rem", fontWeight: 700, color: "hsl(340 40% 32%)" }}>{label}</span>
+      <span style={{ fontFamily: "'Nunito', sans-serif", fontSize: "0.78rem", fontWeight: 600, color: "hsl(340 20% 58%)" }}>{sub}</span>
     </button>
   );
 }
 
+/* ── Gift reveal ── */
 function GiftReveal({ type, onBack }: { type: GiftType; onBack: () => void }) {
   const content = {
     flowers: {
-      title: "A Bouquet of Love",
-      subtitle: "Every petal holds a thought of you",
+      title: "お花のブーケ 🌷",
+      subtitle: "A bouquet of love, just for you",
       image: FLOWERS_IMG,
-      text: "These flowers are as beautiful as you are — a little reminder that you make every room bloom just by being in it. Today and always, you deserve all the flowers in the world.",
-      closing: null,
-      accent: "hsl(345 55% 62%)",
-      emoji: "🌷",
+      paragraphs: [
+        "These flowers are as beautiful as you are, Akiko — a little reminder that you make every room bloom just by being in it.",
+        "Today and always, you deserve all the flowers in the world. 🌸",
+      ],
+      signing: null,
+      bg: "linear-gradient(140deg, hsl(340 80% 96%) 0%, hsl(20 80% 97%) 100%)",
+      accent: "hsl(340 85% 68%)",
+      border: "hsl(340 80% 85%)",
+      tag: "🌷 flowers",
     },
     photos: {
-      title: "Our Memories",
+      title: "思い出 📸",
       subtitle: "Captured moments, forever treasured",
       image: PHOTO_IMG,
-      text: "Every photograph is a love letter. These moments are my most precious gifts — because every one of them has you in it. Thank you for being the story I love telling.",
-      closing: null,
-      accent: "hsl(38 50% 60%)",
-      emoji: "📸",
+      paragraphs: [
+        "Every photograph is a love letter. These moments are our most precious gifts — because every one of them has you in it.",
+        "Thank you for being the story I love telling. 💛",
+      ],
+      signing: null,
+      bg: "linear-gradient(140deg, hsl(40 80% 96%) 0%, hsl(160 60% 96%) 100%)",
+      accent: "hsl(30 85% 62%)",
+      border: "hsl(30 80% 82%)",
+      tag: "📸 memories",
     },
     message: {
-      title: "From My Heart",
-      subtitle: "Words I carry every day",
+      title: "こっちゃんより 💌",
+      subtitle: "A letter from Coco, with all my heart",
       image: GIFT_IMG,
-      text: "You are my first home, my safe harbor, my greatest teacher. The world is kinder because you are in it, and I am who I am because of you. Thank you for your love, your patience, and your endless grace.",
-      closing: "With all my love — always.",
-      accent: "hsl(345 45% 52%)",
-      emoji: "💌",
+      paragraphs: [
+        "母の日おめでとう。",
+        "日本に入れないから直接感謝を伝えられないのが残念だけど、いつも遠くからたくさんこっちゃんのことサポートしてくれてありがとう。",
+        "いつも感謝してるよ ♡",
+      ],
+      signing: "— Coco 🎀",
+      bg: "linear-gradient(140deg, hsl(270 60% 97%) 0%, hsl(340 70% 97%) 100%)",
+      accent: "hsl(340 80% 62%)",
+      border: "hsl(270 60% 85%)",
+      tag: "💌 letter",
     },
   };
 
@@ -214,145 +238,151 @@ function GiftReveal({ type, onBack }: { type: GiftType; onBack: () => void }) {
   if (!c) return null;
 
   return (
-    <div className="w-full max-w-xl mx-auto animate-scale-reveal">
+    <div className="w-full max-w-lg mx-auto animate-scale-reveal pb-10">
+      {/* Back */}
       <button
         onClick={onBack}
-        className="mb-10 flex items-center gap-2 text-sm"
-        style={{ color: "hsl(20 10% 55%)", fontFamily: "'Jost', sans-serif", fontWeight: 300, letterSpacing: "0.05em", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+        className="mb-8 flex items-center gap-2 text-sm"
+        style={{ color: "hsl(340 30% 55%)", fontFamily: "'Nunito', sans-serif", fontWeight: 700, background: "none", border: "none", cursor: "pointer", padding: 0 }}
       >
-        <Icon name="ArrowLeft" size={16} />
-        Choose another
+        <Icon name="ArrowLeft" size={15} />
+        Choose another gift
       </button>
 
-      <div className="text-center mb-5" style={{ fontSize: "3rem" }}>{c.emoji}</div>
+      {/* Tag sticker */}
+      <div className="mb-5 flex items-center gap-3">
+        <span
+          style={{
+            fontFamily: "'Nunito', sans-serif", fontWeight: 800, fontSize: "0.72rem",
+            background: c.accent, color: "white", padding: "4px 12px",
+            borderRadius: "100px", letterSpacing: "0.06em", textTransform: "uppercase" as const,
+          }}
+        >
+          {c.tag}
+        </span>
+      </div>
 
+      {/* Title */}
       <h2
-        className="text-center mb-2"
-        style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontSize: "clamp(2rem, 5vw, 3rem)",
-          fontWeight: 400,
-          color: "hsl(20 10% 20%)",
-          lineHeight: 1.15,
-        }}
+        className="mb-1"
+        style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(2rem, 6vw, 2.8rem)", fontWeight: 700, color: "hsl(340 45% 33%)", lineHeight: 1.15 }}
       >
         {c.title}
       </h2>
-      <p
-        className="text-center mb-8"
-        style={{
-          fontFamily: "'Jost', sans-serif",
-          fontSize: "0.75rem",
-          letterSpacing: "0.25em",
-          textTransform: "uppercase" as const,
-          color: c.accent,
-          fontWeight: 300,
-        }}
-      >
+      <p className="mb-7" style={{ fontFamily: "'Nunito', sans-serif", fontSize: "0.85rem", fontWeight: 600, color: "hsl(340 20% 60%)" }}>
         {c.subtitle}
       </p>
 
-      <div
-        className="photo-frame rounded-3xl overflow-hidden mb-8"
-        style={{ border: `1px solid ${c.accent}33`, aspectRatio: "4/3", boxShadow: "0 20px 60px rgba(0,0,0,0.12)" }}
-      >
-        <img src={c.image} alt={c.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      {/* Image */}
+      <div className="polaroid mb-8" style={{ borderRadius: "8px" }}>
+        <img src={c.image} alt={c.title} style={{ width: "100%", aspectRatio: "4/3", objectFit: "cover", borderRadius: "4px" }} />
+        <p style={{ textAlign: "center", marginTop: "8px", fontFamily: "'Caveat', cursive", fontSize: "1rem", color: "hsl(340 30% 55%)", fontWeight: 600 }}>
+          {c.tag}
+        </p>
       </div>
 
+      {/* Letter card */}
       <div
-        className="message-card rounded-3xl p-8"
-        style={{ border: `1px solid ${c.accent}22` }}
+        className="letter-paper cute-card p-7"
+        style={{ border: `2px solid ${c.border}`, boxShadow: `0 8px 32px ${c.accent}22` }}
       >
-        <p
-          style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontSize: "1.15rem",
-            lineHeight: 1.85,
-            fontWeight: 300,
-            color: "hsl(20 10% 28%)",
-          }}
-        >
-          {c.text}
-        </p>
-        {c.closing && (
+        {/* Doodle corner hearts */}
+        <div className="flex justify-between mb-4" style={{ opacity: 0.5 }}>
+          <DoodleHeart color={c.accent} size={16} />
+          <DoodleHeart color={c.accent} size={16} />
+        </div>
+
+        {c.paragraphs.map((para, i) => (
           <p
-            className="mt-5"
+            key={i}
+            className={i > 0 ? "mt-4" : ""}
             style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "1.1rem",
+              fontFamily: i === 0 && type === "message" ? "'Caveat', cursive" : "'Nunito', sans-serif",
+              fontSize: i === 0 && type === "message" ? "1.4rem" : "1rem",
+              fontWeight: i === 0 && type === "message" ? 700 : 500,
               lineHeight: 1.85,
-              fontWeight: 300,
-              color: "hsl(20 10% 38%)",
-              fontStyle: "italic",
+              color: "hsl(340 25% 30%)",
             }}
           >
-            {c.closing}
+            {para}
+          </p>
+        ))}
+
+        {c.signing && (
+          <p
+            className="mt-6 text-right"
+            style={{ fontFamily: "'Caveat', cursive", fontSize: "1.3rem", fontWeight: 700, color: c.accent }}
+          >
+            {c.signing}
           </p>
         )}
-      </div>
 
-      <div className="flex items-center justify-center gap-3 mt-8">
-        <div className="h-px w-12" style={{ background: `linear-gradient(to right, transparent, ${c.accent})` }} />
-        <span style={{ color: c.accent, fontSize: "1rem" }}>✦</span>
-        <div className="h-px w-12" style={{ background: `linear-gradient(to left, transparent, ${c.accent})` }} />
+        <div className="flex justify-between mt-5" style={{ opacity: 0.4 }}>
+          <span className="sticker">✨</span>
+          <span className="sticker">🌸</span>
+          <span className="sticker">✨</span>
+        </div>
       </div>
     </div>
   );
 }
 
+/* ── Gift selection section ── */
 function GiftSection({ onBack }: { onBack: () => void }) {
   const [selected, setSelected] = useState<GiftType>(null);
   const [revealed, setRevealed] = useState(false);
 
   const handleSelect = (type: GiftType) => {
     setSelected(type);
-    setTimeout(() => setRevealed(true), 100);
+    setTimeout(() => setRevealed(true), 80);
   };
 
   const handleBack = () => {
     setRevealed(false);
-    setTimeout(() => setSelected(null), 400);
+    setTimeout(() => setSelected(null), 350);
   };
 
   const gifts = [
-    { id: "flowers" as GiftType, emoji: "🌷", label: "Flowers", sub: "A bouquet just for you", accent: "hsl(345 55% 62%)", bg: "hsl(350 60% 96%)" },
-    { id: "photos" as GiftType, emoji: "📸", label: "Photos", sub: "Our precious memories", accent: "hsl(38 50% 60%)", bg: "hsl(40 50% 96%)" },
-    { id: "message" as GiftType, emoji: "💌", label: "Message", sub: "Words from the heart", accent: "hsl(200 40% 55%)", bg: "hsl(200 40% 96%)" },
+    { id: "flowers" as GiftType, emoji: "🌷", label: "Flowers",   sub: "A bouquet for you",       bg: "hsl(340 80% 97%)", border: "hsl(340 70% 84%)" },
+    { id: "photos"  as GiftType, emoji: "📸", label: "Photos",    sub: "Our precious memories",   bg: "hsl(38 80% 96%)",  border: "hsl(38 70% 82%)" },
+    { id: "message" as GiftType, emoji: "💌", label: "Letter",    sub: "Words from Coco's heart", bg: "hsl(270 50% 97%)", border: "hsl(270 50% 85%)" },
   ];
 
   return (
-    <div className="min-h-screen relative px-6 py-16 flex flex-col items-center">
-      <div
-        className="fixed inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(ellipse at 30% 20%, hsl(350 60% 94%) 0%, transparent 50%), radial-gradient(ellipse at 70% 80%, hsl(38 50% 93%) 0%, transparent 50%), hsl(40 30% 97%)",
-        }}
-      />
+    <div
+      className="min-h-screen relative px-6 py-14 flex flex-col items-center overflow-hidden"
+      style={{ background: "linear-gradient(160deg, hsl(340 80% 97%) 0%, hsl(40 80% 97%) 50%, hsl(200 60% 97%) 100%)" }}
+    >
       <PetalRain />
+      <DoodleStars />
 
       {!revealed ? (
         <>
           <button
             onClick={onBack}
-            className="self-start mb-10 flex items-center gap-2 text-sm"
-            style={{ color: "hsl(20 10% 55%)", fontFamily: "'Jost', sans-serif", fontWeight: 300, letterSpacing: "0.05em", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+            className="self-start mb-8 flex items-center gap-2 text-sm"
+            style={{ color: "hsl(340 30% 55%)", fontFamily: "'Nunito', sans-serif", fontWeight: 700, background: "none", border: "none", cursor: "pointer", padding: 0 }}
           >
-            <Icon name="ArrowLeft" size={16} />
+            <Icon name="ArrowLeft" size={15} />
             Back
           </button>
 
-          <p className="text-center mb-3" style={{ color: "hsl(345 45% 60%)", fontSize: "0.75rem", letterSpacing: "0.3em", textTransform: "uppercase" as const, fontFamily: "'Jost', sans-serif", fontWeight: 300 }}>
-            Choose Your Gift
-          </p>
-          <h2
-            className="text-center mb-14 animate-fade-up"
-            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 300, color: "hsl(20 10% 22%)", animationDelay: "0.1s", opacity: 0 }}
-          >
-            What shall we open first?
-          </h2>
+          <span className="sticker text-4xl mb-3 animate-bounce-gentle" style={{ display: "block" }}>🎀</span>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 w-full max-w-2xl">
+          <h2
+            className="text-center mb-2 animate-fade-up"
+            style={{ fontFamily: "'Caveat', cursive", fontSize: "clamp(2.2rem, 7vw, 3.8rem)", fontWeight: 700, color: "hsl(340 45% 35%)", animationDelay: "0.1s", opacity: 0 }}
+          >
+            Pick a gift, Akiko!
+          </h2>
+          <p
+            className="text-center mb-10 animate-fade-up"
+            style={{ fontFamily: "'Nunito', sans-serif", fontSize: "0.88rem", fontWeight: 600, color: "hsl(340 20% 58%)", animationDelay: "0.25s", opacity: 0 }}
+          >
+            Three little surprises waiting for you 🌸
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl">
             {gifts.map((g, i) => (
               <GiftCard
                 key={g.id}
@@ -360,10 +390,16 @@ function GiftSection({ onBack }: { onBack: () => void }) {
                 label={g.label}
                 sub={g.sub}
                 bg={g.bg}
-                accent={g.accent}
-                delay={`${0.2 + i * 0.15}s`}
+                border={g.border}
+                delay={`${0.3 + i * 0.12}s`}
                 onClick={() => handleSelect(g.id)}
               />
+            ))}
+          </div>
+
+          <div className="flex gap-2 mt-10 animate-fade-in" style={{ animationDelay: "0.8s", opacity: 0 }}>
+            {["💖", "🌸", "✨", "🌷", "💖"].map((s, i) => (
+              <span key={i} className="sticker" style={{ fontSize: "1rem" }}>{s}</span>
             ))}
           </div>
         </>
@@ -374,16 +410,16 @@ function GiftSection({ onBack }: { onBack: () => void }) {
   );
 }
 
+/* ── Root ── */
 export default function Index() {
   const [page, setPage] = useState<"hero" | "gifts">("hero");
 
   return (
     <div style={{ minHeight: "100vh" }}>
-      {page === "hero" ? (
-        <HeroSection onExplore={() => setPage("gifts")} />
-      ) : (
-        <GiftSection onBack={() => setPage("hero")} />
-      )}
+      {page === "hero"
+        ? <HeroSection onExplore={() => setPage("gifts")} />
+        : <GiftSection onBack={() => setPage("hero")} />
+      }
     </div>
   );
 }

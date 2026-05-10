@@ -25,16 +25,18 @@
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
 
-    /* Mother's Day palette */
-    --blush: 350 60% 88%;
-    --blush-deep: 345 45% 75%;
-    --petal: 340 30% 96%;
-    --cream: 40 30% 97%;
-    --gold: 38 50% 65%;
-    --rose: 345 55% 62%;
-    --rose-dark: 345 45% 45%;
-    --sage: 150 20% 70%;
-    --charcoal: 20 10% 25%;
+    /* Cute kawaii palette */
+    --bubblegum: 340 90% 76%;
+    --bubblegum-light: 340 80% 92%;
+    --peach: 20 90% 78%;
+    --peach-light: 20 80% 93%;
+    --lemon: 50 90% 75%;
+    --mint: 160 60% 76%;
+    --sky: 200 80% 80%;
+    --lavender: 270 60% 82%;
+    --cream: 40 60% 96%;
+    --warm-white: 30 40% 98%;
+    --ink: 340 30% 28%;
   }
 }
 
@@ -44,24 +46,24 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "Jost", sans-serif;
+    font-family: "Nunito", sans-serif;
   }
 }
 
-/* Petal particles */
+/* Animations */
 @keyframes floatPetal {
   0% {
-    transform: translateY(-10px) rotate(0deg) translateX(0);
+    transform: translateY(-20px) rotate(0deg) translateX(0px);
     opacity: 0;
   }
   10% {
-    opacity: 0.7;
+    opacity: 1;
   }
   90% {
-    opacity: 0.5;
+    opacity: 0.8;
   }
   100% {
-    transform: translateY(100vh) rotate(720deg) translateX(80px);
+    transform: translateY(110vh) rotate(540deg) translateX(60px);
     opacity: 0;
   }
 }
@@ -69,7 +71,7 @@
 @keyframes fadeUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -89,159 +91,170 @@
 @keyframes scaleReveal {
   from {
     opacity: 0;
-    transform: scale(0.85);
+    transform: scale(0.88) translateY(16px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -200% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
-}
-
-@keyframes pulse-soft {
-  0%,
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(200, 100, 120, 0.3);
-  }
-  50% {
-    transform: scale(1.02);
-    box-shadow: 0 0 0 12px rgba(200, 100, 120, 0);
-  }
-}
-
-@keyframes envelope-open {
-  0% {
-    transform: rotateX(0deg);
-  }
-  100% {
-    transform: rotateX(-180deg);
-  }
-}
-
-@keyframes letter-rise {
-  0% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(-20px);
-    opacity: 1;
+    transform: scale(1) translateY(0);
   }
 }
 
 @keyframes slideInUp {
   from {
-    transform: translateY(60px);
     opacity: 0;
+    transform: translateY(40px);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
+@keyframes bounce-gentle {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+/* Utilities */
 .animate-fade-up {
-  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-
 .animate-fade-in {
-  animation: fadeIn 1s ease forwards;
+  animation: fadeIn 0.8s ease forwards;
 }
-
 .animate-scale-reveal {
-  animation: scaleReveal 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: scaleReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-
 .animate-slide-in-up {
-  animation: slideInUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: slideInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.animate-bounce-gentle {
+  animation: bounce-gentle 2.4s ease-in-out infinite;
+}
+.animate-heartbeat {
+  animation: heartbeat 1.8s ease-in-out infinite;
+}
+.animate-wiggle {
+  animation: wiggle 3s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: spin-slow 14s linear infinite;
 }
 
+/* Petal rain */
 .petal {
   position: fixed;
   pointer-events: none;
   z-index: 0;
-  font-size: 1.2rem;
   animation: floatPetal linear infinite;
 }
 
+/* Gift buttons */
 .gift-btn {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.gift-btn:hover {
+  transform: translateY(-7px) scale(1.04);
+}
+.gift-btn:active {
+  transform: scale(0.96);
 }
 
-.gift-btn::before {
+/* Cute card sheen */
+.cute-card {
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+}
+.cute-card::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    transparent 50%,
-    rgba(255, 255, 255, 0.1) 100%
-  );
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.gift-btn:hover::before {
-  opacity: 1;
-}
-
-.gift-btn:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(180, 80, 100, 0.25);
-}
-
-.photo-frame {
-  position: relative;
-  overflow: hidden;
-}
-
-.photo-frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 60%,
-    rgba(250, 240, 240, 0.4)
+    rgba(255, 255, 255, 0.55) 0%,
+    transparent 60%
   );
   pointer-events: none;
+  border-radius: inherit;
 }
 
-.shimmer-text {
-  background: linear-gradient(
-    90deg,
-    hsl(345 45% 45%),
-    hsl(38 50% 55%),
-    hsl(345 45% 45%)
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shimmer 3s linear infinite;
+/* Letter lined paper */
+.letter-paper {
+  background:
+    repeating-linear-gradient(
+      transparent,
+      transparent 27px,
+      rgba(200, 150, 180, 0.13) 28px
+    ),
+    hsl(30 50% 99%);
 }
 
-.message-card {
-  backdrop-filter: blur(10px);
-  background: rgba(255, 250, 250, 0.85);
-  border: 1px solid rgba(200, 130, 150, 0.2);
+/* Sticker hover */
+.sticker {
+  display: inline-block;
+  cursor: default;
+}
+.sticker:hover {
+  animation: pop 0.35s ease;
 }
 
-.scroll-reveal {
-  opacity: 0;
-}
-.scroll-reveal.revealed {
-  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+/* Polaroid frame */
+.polaroid {
+  background: white;
+  padding: 10px 10px 30px;
+  box-shadow: 0 6px 24px rgba(200, 100, 130, 0.15);
+  border-radius: 3px;
 }
