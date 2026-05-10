@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import Icon from "@/components/ui/icon";
 
 // Soft lo-fi / music box style track (royalty-free from Pixabay)
-const MUSIC_URL = "https://cdn.pixabay.com/audio/2023/09/05/audio_1d0e716ef9.mp3";
+const MUSIC_URL = "https://cdn.pixabay.com/audio/2022/10/30/audio_0333b31557.mp3";
 
 function MusicButton() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -164,7 +164,7 @@ function HeroSection({ onExplore }: { onExplore: () => void }) {
           textShadow: "2px 3px 0px hsl(340 80% 90%)",
         }}
       >
-        お母さんへ 🌸
+        Dear Mom 🌸
       </h1>
 
       <p
